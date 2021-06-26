@@ -504,20 +504,14 @@ class AnkiConnect:
         did = collection.decks.id(deck)
         return collection.decks.confForDid(did)
 
-
     @util.api()
     def saveDeckConfig(self, config):
         collection = self.collection()
 
-        config['id'] = str(config['id'])
-        config['mod'] = anki.utils.intTime()
-        config['usn'] = collection.usn()
-
-        if config['id'] not in collection.decks.dconf:
-            return False
-
-        collection.decks.dconf[config['id']] = config
-        collection.decks.changed = True
+        deck2 = collection.decks.id(config["deckName"])
+        conf2 = collection.decks.confForDid(deck2)
+        conf2["new"]["perDay"] = config["new"]["perDay"]
+        collection.decks.save(conf2)
         return True
 
 
